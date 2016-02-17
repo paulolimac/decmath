@@ -35,13 +35,6 @@ SOFTWARE.
 import decimal
 from decimal import Decimal, getcontext
 
-# These variables are for dropin compatability with math,
-# however the functions are prefered.
-pi = pi()
-tau = tau()
-e = e()
-phi = phi()
-
 def pi():
     """Compute Pi to the current precision."""
     getcontext().prec += 2
