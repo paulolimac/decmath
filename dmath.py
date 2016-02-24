@@ -73,7 +73,7 @@ def exp(x):
     (7.38905609893+0j)
 
     """
-    x = Decimal(x)
+    x = Decimal(str(x))
     getcontext().prec += 2
     i, lasts, s, fact, num = 0, 0, 1, 1, 1
     while s != lasts:
@@ -96,7 +96,7 @@ def cos(x):
     (0.87758256189+0j)
 
     """
-    x = Decimal(x)
+    x = Decimal(str(x))
     getcontext().prec += 2
     i, lasts, s, fact, num, sign = 0, 0, 1, 1, 1, 1
     while s != lasts:
@@ -120,7 +120,7 @@ def sin(x):
     (0.479425538604+0j)
 
     """
-    x = Decimal(x)
+    x = Decimal(str(x))
     getcontext().prec += 2
     i, lasts, s, fact, num, sign = 1, 0, x, 1, x, 1
     while s != lasts:
@@ -135,7 +135,7 @@ def sin(x):
 
 def cosh(x):
     """Return the hyperbolic cosine of Decimal x."""
-    x = Decimal(x)
+    x = Decimal(str(x))
 
     if x == 0:
         return Decimal(1)
@@ -153,7 +153,7 @@ def cosh(x):
 
 def sinh(x):
     """Return the hyperbolic sine of Decimal x."""
-    x = Decimal(x)
+    x = Decimal(str(x))
 
     if x == 0:
         return Decimal(0)
@@ -173,7 +173,8 @@ def sinh(x):
 # it, since it is much faster.
 def asin(x):
     """Return the arc sine (measured in radians) of Decimal x."""
-    x = Decimal(x)
+    x = Decimal(str(x))
+
     if abs(x) > 1:
         raise ValueError("Domain error: asin accepts -1 <= x <= 1")
 
@@ -201,6 +202,8 @@ def asin(x):
 # This is way faster, is there a downside?
 def asin(x):
     """Return the arc sine (measured in radians) of Decimal x."""
+    x = Decimal(str(x))
+
     if abs(x) > 1:
         raise ValueError("Domain error: asin accepts -1 <= x <= 1")
 
@@ -217,7 +220,8 @@ def asin(x):
 # it, since it is much faster.
 def acos(x):
     """Return the arc cosine (measured in radians) of Decimal x."""
-    x = Decimal(x)
+    x = Decimal(str(x))
+
     if abs(x) > 1:
         raise ValueError("Domain error: acos accepts -1 <= x <= 1")
 
@@ -245,6 +249,8 @@ def acos(x):
 # This is way faster, is there a downside?
 def acos(x):
     """Return the arc cosine (measured in radians) of Decimal x."""
+    x = Decimal(str(x))
+
     if abs(x) > 1:
         raise ValueError("Domain error: acos accepts -1 <= x <= 1")
 
@@ -267,7 +273,8 @@ def tanh(x):
 
 def atan(x):
     """Return the arc tangent (measured in radians) of Decimal x."""
-    x = Decimal(x)
+    x = Decimal(str(x))
+
     if x == Decimal('-Inf'):
         return pi() / -2
     elif x == 0:
@@ -308,8 +315,10 @@ def atan2(y, x):
     """Return the arc tangent (measured in radians) of y/x.
     Unlike atan(y/x), the signs of both x and y are considered.
     """
-    abs_y = Decimal(abs(y))
-    abs_x = Decimal(abs(x))
+    y = Decimal(str(y))
+    x = Decimal(str(x))
+    abs_y = abs(y)
+    abs_x = abs(x)
     y_is_real = abs_y != Decimal('Inf')
 
     if x:
@@ -334,42 +343,42 @@ def log(x, base=None):
     If the base not specified, returns the natural logarithm (base e) of x.
     """
     if base == None:
-        return Decimal(x).ln()
+        return Decimal(str(x)).ln()
 
     else:
-        return Decimal(x).log10() / Decimal(base).log10()
+        return Decimal(str(x)).log10() / Decimal(str(base)).log10()
 
 def log10(x):
     """log10(x) -> the base 10 logarithm of Decimal x."""
-    return Decimal(x).log10()
+    return Decimal(str(x)).log10()
 
 def sqrt(x):
     """Return the square root of x."""
-    return Decimal(x).sqrt()
+    return Decimal(str(x)).sqrt()
 
 def pow(x, y):
     """Return x raised to the power y."""
-    return Decimal(x).__pow__(Decimal(y))
+    return Decimal(str(x)).__pow__(Decimal(str(y)))
 
 def degrees(x):
     """degrees(x) -> converts Decimal angle x from radians to degrees"""
-    return +(Decimal(x) * 180 / pi())
+    return +(Decimal(str(x)) * 180 / pi())
 
 def radians(x):
     """radians(x) -> converts Decimal angle x from degrees to radians"""
-    return +(Decimal(x) * pi() / 180)
+    return +(Decimal(str(x)) * pi() / 180)
 
 def ceil(x):
     """Return the smallest integral value >= x."""
-    return Decimal(x).to_integral(rounding=decimal.ROUND_CEILING)
+    return Decimal(str(x)).to_integral(rounding=decimal.ROUND_CEILING)
 
 def floor(x):
     """Return the largest integral value <= x."""
-    return Decimal(x).to_integral(rounding=decimal.ROUND_FLOOR)
+    return Decimal(str(x)).to_integral(rounding=decimal.ROUND_FLOOR)
 
 def hypot(x, y):
     """Return the Euclidean distance, sqrt(x*x + y*y)."""
-    return sqrt(Decimal(x) * Decimal(x) + Decimal(y) * Decimal(y))
+    return sqrt(Decimal(str(x)) * Decimal(str(x)) + Decimal(str(y)) * Decimal(str(y)))
 
 
 __all__ = ['acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'cosh', 'degrees',
