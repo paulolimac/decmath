@@ -34,6 +34,7 @@ SOFTWARE.
 
 import decimal
 from decimal import Decimal, getcontext
+from math import *
 
 def pi():
     """Compute Pi to the current precision."""
