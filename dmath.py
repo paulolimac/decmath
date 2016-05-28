@@ -98,6 +98,8 @@ def cos(x):
 
     """
     x = Decimal(str(x))
+    if math.isnan(x):
+        return Decimal('NaN')
     getcontext().prec += 2
     i, lasts, s, fact, num, sign = 0, 0, 1, 1, 1, 1
     while s != lasts:
@@ -122,6 +124,8 @@ def sin(x):
 
     """
     x = Decimal(str(x))
+    if math.isnan(x):
+        return Decimal('NaN')
     getcontext().prec += 2
     i, lasts, s, fact, num, sign = 1, 0, x, 1, x, 1
     while s != lasts:
@@ -379,7 +383,7 @@ def floor(x):
 
 def hypot(x, y):
     """Return the Euclidean distance, sqrt(x*x + y*y)."""
-    return sqrt(Decimal(str(x)) * Decimal(str(x)) + Decimal(str(y)) * Decimal(str(y)))
+    return sqrt(Decimal(str(x)).__pow__(2) + Decimal(str(y)).__pow__(2))
 
 
 __all__ = ['acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'cosh', 'degrees',
