@@ -140,7 +140,7 @@ def sin(x):
 
 def cosh(x):
     """Return the hyperbolic cosine of Decimal x."""
-    x = Decimal(str(x)) % (2 * pi())
+    x = Decimal(str(x))
 
     if x == 0:
         return Decimal(1)
@@ -158,7 +158,7 @@ def cosh(x):
 
 def sinh(x):
     """Return the hyperbolic sine of Decimal x."""
-    x = Decimal(str(x)) % (2 * pi())
+    x = Decimal(str(x))
 
     if x == 0:
         return Decimal(0)
