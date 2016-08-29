@@ -98,7 +98,7 @@ def cos(x):
 
     """
     x = Decimal(str(x)) % (2 * pi())
-    if math.isnan(x):
+    if isnan(x):
         return Decimal('NaN')
     getcontext().prec += 2
     i, lasts, s, fact, num, sign = 0, 0, 1, 1, 1, 1
@@ -124,7 +124,7 @@ def sin(x):
 
     """
     x = Decimal(str(x)) % (2 * pi())
-    if math.isnan(x):
+    if isnan(x):
         return Decimal('NaN')
     getcontext().prec += 2
     i, lasts, s, fact, num, sign = 1, 0, x, 1, x, 1
