@@ -97,7 +97,7 @@ def cos(x):
     (0.87758256189+0j)
 
     """
-    x = Decimal(str(x))
+    x = Decimal(str(x)) % (2 * pi())
     if math.isnan(x):
         return Decimal('NaN')
     getcontext().prec += 2
@@ -123,7 +123,7 @@ def sin(x):
     (0.479425538604+0j)
 
     """
-    x = Decimal(str(x))
+    x = Decimal(str(x)) % (2 * pi())
     if math.isnan(x):
         return Decimal('NaN')
     getcontext().prec += 2
@@ -140,7 +140,7 @@ def sin(x):
 
 def cosh(x):
     """Return the hyperbolic cosine of Decimal x."""
-    x = Decimal(str(x))
+    x = Decimal(str(x)) % (2 * pi())
 
     if x == 0:
         return Decimal(1)
@@ -158,7 +158,7 @@ def cosh(x):
 
 def sinh(x):
     """Return the hyperbolic sine of Decimal x."""
-    x = Decimal(str(x))
+    x = Decimal(str(x)) % (2 * pi())
 
     if x == 0:
         return Decimal(0)
@@ -387,6 +387,5 @@ def hypot(x, y):
 
 
 __all__ = ['acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'cosh', 'degrees',
-           'e', 'exp', 'floor', 'golden_ratio', 'hypot', 'log', 'log10', 'pi',
-           'pow', 'phi', 'tau', 'radians', 'sign', 'sin', 'sinh', 'sqrt', 'tan',
-           'tanh']
+           'e', 'exp', 'floor', 'hypot', 'log', 'log10', 'pi', 'pow', 'phi',
+           'tau', 'radians', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh']
