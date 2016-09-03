@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 """
-dmath v0.9.1
+decmath v0.1.0
 Copyright (c) 2016 Evert Provoost <evert.provoost@gmail.com>
 
 Based on dmath 0.9:
 Copyright (c) 2007 Brian Beck <exogen@gmail.com>,
                    Christopher Hesse <christopher.hesse@gmail.com>
+
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -26,6 +27,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
 
 # This library aims at implementing the standard math library, (and some extras)
 # starting with the most used funtions.
