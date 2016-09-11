@@ -1,4 +1,4 @@
-DECMATH
+DecMath
 =====
 
 First off all this library builds upon dmath, a project by Brian Beck (exogen@gmail.com) and Christopher Hesse (christopher.hesse@gmail.com).
