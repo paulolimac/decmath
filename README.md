@@ -1,7 +1,7 @@
 DECMATH
 =====
 
-First off all this library builds upon dmath, a project by Brian Beck <exogen@gmail.com> and Christopher Hesse <christopher.hesse@gmail.com>.
+First off all this library builds upon dmath, a project by Brian Beck (exogen@gmail.com) and Christopher Hesse (christopher.hesse@gmail.com).
 
 The main goal I have for now is to implement all functions in the standard math library for which it would be useful to have an alternative that uses the Decimal type.
 
