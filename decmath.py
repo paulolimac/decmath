@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-decmath v0.1.0
+decmath v0.2.0
 Copyright (c) 2016 Evert Provoost <evert.provoost@gmail.com>
 
 Based on dmath 0.9:
@@ -34,34 +34,15 @@ SOFTWARE.
 # If you'd have a request you can always open a ticket or even better:
 # propose a pull request containing those changes.
 
+import sys
+
+if sys.version_info[0] != 3:
+    print("DecMath requires Python 3")
+    sys.exit(1)
+
 import decimal
 from decimal import Decimal, getcontext
 from math import *
-
-def pi():
-    """Compute Pi to the current precision."""
-    getcontext().prec += 2
-    lasts, t, s, n, na, d, da = 0, Decimal(3), 3, 1, 0, 0, 24
-    while s != lasts:
-        lasts = s
-        n, na = n + na, na + 8
-        d, da = d + da, da + 32
-        t = (t * n) / d
-        s += t
-    getcontext().prec -= 2
-    return +s
-
-def tau():
-    """Compute Tau to the current precision."""
-    return 2 * pi()
-
-def e():
-    """Compute the base of the natural logarithm to the current precision."""
-    return exp(Decimal(1))
-
-def phi():
-    """Calculate the golden ratio to the current precision."""
-    return  +((1 + Decimal(5).sqrt()) / 2)
 
 def exp(x):
     """Return e raised to the power of x.  Result type matches input type.
@@ -87,6 +68,42 @@ def exp(x):
         s += num / fact
     getcontext().prec -= 2
     return +s
+
+class _Constants(object):
+    @property
+    def pi(self):
+        """Compute Pi to the current precision."""
+        getcontext().prec += 2
+        lasts, t, s, n, na, d, da = 0, Decimal(3), 3, 1, 0, 0, 24
+        while s != lasts:
+            lasts = s
+            n, na = n + na, na + 8
+            d, da = d + da, da + 32
+            t = (t * n) / d
+            s += t
+        getcontext().prec -= 2
+        return +s
+    
+    @property
+    def tau(self):
+        """Compute Tau to the current precision."""
+        return 2 * pi
+    
+    @property
+    def e(self):
+        """Compute the base of the natural logarithm to the current precision."""
+        return exp(Decimal(1))
+
+    @property
+    def phi(self):
+        """Calculate the golden ratio to the current precision."""
+        return  +((1 + Decimal(5).sqrt()) / 2)
+
+    def __getattr__(self, name):
+        try:
+            return globals()[name]
+        except KeyError:
+            raise AttributeError()
 
 def cos(x):
     """Return the cosine of x as measured in radians.
@@ -387,6 +404,7 @@ def hypot(x, y):
     """Return the Euclidean distance, sqrt(x*x + y*y)."""
     return sqrt(Decimal(str(x)).__pow__(2) + Decimal(str(y)).__pow__(2))
 
+sys.modules[__name__] = _Constants()
 
 __all__ = ['acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'cosh', 'degrees',
            'e', 'exp', 'floor', 'hypot', 'log', 'log10', 'pi', 'pow', 'phi',
