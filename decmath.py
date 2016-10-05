@@ -69,25 +69,29 @@ def exp(x):
     getcontext().prec -= 2
     return +s
 
+def _pi():
+    """Hidden function to compute Pi to the current precision."""
+    getcontext().prec += 2
+    lasts, t, s, n, na, d, da = 0, Decimal(3), 3, 1, 0, 0, 24
+    while s != lasts:
+        lasts = s
+        n, na = n + na, na + 8
+        d, da = d + da, da + 32
+        t = (t * n) / d
+        s += t
+    getcontext().prec -= 2
+    return +s
+
 class _Constants(object):
     @property
     def pi(self):
         """Compute Pi to the current precision."""
-        getcontext().prec += 2
-        lasts, t, s, n, na, d, da = 0, Decimal(3), 3, 1, 0, 0, 24
-        while s != lasts:
-            lasts = s
-            n, na = n + na, na + 8
-            d, da = d + da, da + 32
-            t = (t * n) / d
-            s += t
-        getcontext().prec -= 2
-        return +s
+        return _pi()
     
     @property
     def tau(self):
         """Compute Tau to the current precision."""
-        return 2 * pi
+        return 2 * _pi()
     
     @property
     def e(self):
@@ -116,7 +120,7 @@ def cos(x):
     (0.87758256189+0j)
 
     """
-    x = Decimal(str(x)) % (2 * pi)
+    x = Decimal(str(x)) % (2 * _pi())
     if isnan(x):
         return Decimal('NaN')
     getcontext().prec += 2
@@ -142,7 +146,7 @@ def sin(x):
     (0.479425538604+0j)
 
     """
-    x = Decimal(str(x)) % (2 * pi)
+    x = Decimal(str(x)) % (2 * _pi())
     if isnan(x):
         return Decimal('NaN')
     getcontext().prec += 2
@@ -203,11 +207,11 @@ def asin(x):
         raise ValueError("Domain error: asin accepts -1 <= x <= 1")
 
     if x == -1:
-        return pi / -2
+        return _pi() / -2
     elif x == 0:
         return Decimal(0)
     elif x == 1:
-        return pi / 2
+        return _pi() / 2
 
     getcontext().prec += 2
     one_half = Decimal('0.5')
@@ -232,11 +236,11 @@ def asin(x):
         raise ValueError("Domain error: asin accepts -1 <= x <= 1")
 
     if x == -1:
-        return pi / -2
+        return _pi() / -2
     elif x == 0:
         return Decimal(0)
     elif x == 1:
-        return pi / 2
+        return _pi() / 2
 
     return atan2(x, Decimal(1 - x ** 2).sqrt())
 
@@ -250,15 +254,15 @@ def acos(x):
         raise ValueError("Domain error: acos accepts -1 <= x <= 1")
 
     if x == -1:
-        return pi
+        return _pi()
     elif x == 0:
-        return pi / 2
+        return _pi() / 2
     elif x == 1:
         return Decimal(0)
 
     getcontext().prec += 2
     one_half = Decimal('0.5')
-    i, lasts, s, gamma, fact, num = Decimal(0), 0, pi / 2 - x, 1, 1, x
+    i, lasts, s, gamma, fact, num = Decimal(0), 0, _pi() / 2 - x, 1, 1, x
     while s != lasts:
         lasts = s
         i += 1
@@ -279,13 +283,13 @@ def acos(x):
         raise ValueError("Domain error: acos accepts -1 <= x <= 1")
 
     if x == -1:
-        return pi
+        return _pi()
     elif x == 0:
-        return pi / 2
+        return _pi() / 2
     elif x == 1:
         return Decimal(0)
 
-    return pi / 2 - atan2(x, Decimal(1 - x ** 2).sqrt())
+    return _pi() / 2 - atan2(x, Decimal(1 - x ** 2).sqrt())
 
 def tan(x):
     """Return the tangent of Decimal x (measured in radians)."""
@@ -300,17 +304,17 @@ def atan(x):
     x = Decimal(str(x))
 
     if x == Decimal('-Inf'):
-        return pi / -2
+        return _pi() / -2
     elif x == 0:
         return Decimal(0)
     elif x == Decimal('Inf'):
-        return pi / 2
+        return _pi() / 2
 
     if x < -1:
-        c = pi / -2
+        c = _pi() / -2
         x = 1 / x
     elif x > 1:
-        c = pi / 2
+        c = _pi() / 2
         x = 1 / x
     else:
         c = 0
@@ -349,16 +353,16 @@ def atan2(y, x):
         if y_is_real:
             a = y and atan(y / x) or Decimal(0)
             if x < 0:
-                a += sign(y) * pi
+                a += sign(y) * _pi()
             return a
         elif abs_y == abs_x:
             x = sign(x)
             y = sign(y)
-            return pi * (Decimal(2) * abs(x) - x) / (Decimal(4) * y)
+            return _pi() * (Decimal(2) * abs(x) - x) / (Decimal(4) * y)
     if y:
         return atan(sign(y) * Decimal('Inf'))
     elif x < 0:
-        return sign(y) * pi
+        return sign(y) * _pi()
     else:
         return Decimal(0)
 
@@ -386,11 +390,11 @@ def pow(x, y):
 
 def degrees(x):
     """degrees(x) -> converts Decimal angle x from radians to degrees"""
-    return +(Decimal(str(x)) * 180 / pi)
+    return +(Decimal(str(x)) * 180 / _pi())
 
 def radians(x):
     """radians(x) -> converts Decimal angle x from degrees to radians"""
-    return +(Decimal(str(x)) * pi / 180)
+    return +(Decimal(str(x)) * _pi() / 180)
 
 def ceil(x):
     """Return the smallest integral value >= x."""
