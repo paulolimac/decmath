@@ -28,6 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+__version__ = "v0.2.1"
 
 # This library aims at implementing the standard math library, (and some extras)
 # starting with the most used funtions.
