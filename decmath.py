@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-decmath v0.2.0
-Copyright (c) 2016 Evert Provoost <evert.provoost@gmail.com>
+decmath v0.2.1
+Copyright (c) 2016-2017 Evert Provoost <evert.provoost@gmail.com>
 
 Based on dmath 0.9:
 Copyright (c) 2007 Brian Beck <exogen@gmail.com>,
@@ -37,11 +37,11 @@ SOFTWARE.
 import sys
 
 if sys.version_info[0] != 3:
-    print("DecMath requires Python 3")
-    sys.exit(1)
+    raise ImportError("DecMath requires Python 3.")
 
 import decimal
 from decimal import Decimal, getcontext
+import math as _math
 from math import *
 
 def exp(x):
@@ -102,12 +102,23 @@ class _Constants(object):
     def phi(self):
         """Calculate the golden ratio to the current precision."""
         return  +((1 + Decimal(5).sqrt()) / 2)
+    
+    @property
+    def inf(self):
+        """Positive infinty."""
+        return  Decimal("Inf")
+    
+    @property
+    def nan(self):
+        """Not a Number."""
+        return  Decimal("NaN")
 
     def __getattr__(self, name):
         try:
             return globals()[name]
         except KeyError:
-            raise AttributeError()
+            sys.tracebacklimit = 0
+            raise AttributeError("module '" + __name__ + "' has no attribute '" + str(name) + "'")
 
 def cos(x):
     """Return the cosine of x as measured in radians.
@@ -204,7 +215,7 @@ def asin(x):
     x = Decimal(str(x))
 
     if abs(x) > 1:
-        raise ValueError("Domain error: asin accepts -1 <= x <= 1")
+        raise ValueError("Domain error: asin accepts -1 <= x <= 1.")
 
     if x == -1:
         return _pi() / -2
@@ -233,7 +244,7 @@ def asin(x):
     x = Decimal(str(x))
 
     if abs(x) > 1:
-        raise ValueError("Domain error: asin accepts -1 <= x <= 1")
+        raise ValueError("Domain error: asin accepts -1 <= x <= 1.")
 
     if x == -1:
         return _pi() / -2
@@ -251,7 +262,7 @@ def acos(x):
     x = Decimal(str(x))
 
     if abs(x) > 1:
-        raise ValueError("Domain error: acos accepts -1 <= x <= 1")
+        raise ValueError("Domain error: acos accepts -1 <= x <= 1.")
 
     if x == -1:
         return _pi()
@@ -280,7 +291,7 @@ def acos(x):
     x = Decimal(str(x))
 
     if abs(x) > 1:
-        raise ValueError("Domain error: acos accepts -1 <= x <= 1")
+        raise ValueError("Domain error: acos accepts -1 <= x <= 1.")
 
     if x == -1:
         return _pi()
@@ -337,7 +348,11 @@ def atan(x):
 
 def sign(x):
     """Return -1 for negative numbers and 1 for positive numbers."""
-    return 2 * Decimal(x >= 0) - 1
+    x = Decimal(str(x))
+    if x == Decimal('-0'):
+        return -1
+    else:
+        return 2 * Decimal(x >= 0) - 1
 
 def atan2(y, x):
     """Return the arc tangent (measured in radians) of y/x.
@@ -408,8 +423,28 @@ def hypot(x, y):
     """Return the Euclidean distance, sqrt(x*x + y*y)."""
     return sqrt(Decimal(str(x)).__pow__(2) + Decimal(str(y)).__pow__(2))
 
+def factorial(x):
+    """Return x factorial. Raises ValueError if x is not integral or is negative."""
+    x = Decimal(str(x))
+    if Decimal(x.to_integral_value()) == x:
+        return _math.factorial(int(x.to_integral_exact()))
+    
+    else:
+        raise ValueError("Domain error: can't compute factorial of non-integral values.")
+
+def copysign(x, y):
+    """Return a float with the magnitude (absolute value) of x but the sign of y.
+       On platforms that support signed zeros, copysign(1.0, -0.0) returns -1.0."""
+    x = Decimal(str(x))
+    y = Decimal(str(y))
+
+    return x.copy_abs() * sign(y)
+
 sys.modules[__name__] = _Constants()
 
-__all__ = ['acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'cosh', 'degrees',
-           'e', 'exp', 'floor', 'hypot', 'log', 'log10', 'pi', 'pow', 'phi',
-           'tau', 'radians', 'sign', 'sin', 'sinh', 'sqrt', 'tan', 'tanh']
+__all__ = ['sign', 'ceil', 'floor', 'factorial', 'copysign',
+           'exp', 'log', 'log10', 'pow', 'sqrt',
+           'hypot', 'sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'atan2',
+           'degrees', 'radians',
+           'sinh', 'cosh', 'tanh',
+           'pi', 'e', 'tau', 'phi', 'inf', 'nan']
