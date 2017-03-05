@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-decmath v0.2.1
+decmath v0.2.2
 Copyright (c) 2016-2017 Evert Provoost <evert.provoost@gmail.com>
 
 Based on dmath 0.9:
@@ -28,7 +28,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-__version__ = "v0.2.1"
 
 # This library aims at implementing the standard math library, (and some extras)
 # starting with the most used funtions.
@@ -427,8 +426,13 @@ def hypot(x, y):
 def factorial(x):
     """Return x factorial. Raises ValueError if x is not integral or is negative."""
     x = Decimal(str(x))
-    if Decimal(x.to_integral_value()) == x:
-        return _math.factorial(int(x.to_integral_exact()))
+    x_i = int(x.to_integral_value())
+    if Decimal(x_i) == x:
+        if x_i >= 0:
+            return _math.factorial(x_i)
+        
+        else:
+            raise ValueError("Domain error: can't compute factorial of negative values.")
     
     else:
         raise ValueError("Domain error: can't compute factorial of non-integral values.")
