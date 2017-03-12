@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-decmath v0.2.2
+decmath v0.3.0
 Copyright (c) 2016-2017 Evert Provoost <evert.provoost@gmail.com>
 
 Based on dmath 0.9:
@@ -28,6 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+__version__ = "v0.3.0"
 
 # This library aims at implementing the standard math library, (and some extras)
 # starting with the most used funtions.
@@ -44,17 +45,41 @@ from decimal import Decimal, getcontext
 import math as _math
 from math import *
 
+def sign(x):
+    """Return -1 for negative numbers and 1 for positive numbers."""
+    x = Decimal(str(x))
+    return Decimal(1).copy_sign(x)
+
+def signt(x):
+    """Return -1 for negative numbers and 1 for positive numbers and 0 for zeroes and NaNs."""
+    x = Decimal(str(x))
+    if x == 0 or x.is_nan():
+        return Decimal(0)
+    else:
+        return Decimal(1).copy_sign(x)
+
+def fabs(x):
+    """Return the absolute value of x."""
+    return Decimal(str(x)).copy_abs()
+
+def fsum(iterable):
+    """Return an accurate floating point sum of values in the iterable."""
+    sum = Decimal(0)
+
+    for term in iterable:
+        sum += Decimal(str(term))
+    
+    return sum
+
 def exp(x):
     """Return e raised to the power of x.  Result type matches input type.
 
-    >>> print exp(Decimal(1))
+    >>> print(exp(Decimal(1)))
     2.718281828459045235360287471
-    >>> print exp(Decimal(2))
+    >>> print(exp(Decimal(2)))
     7.389056098930650227230427461
-    >>> print exp(2.0)
-    7.38905609893
-    >>> print exp(2+0j)
-    (7.38905609893+0j)
+    >>> print(exp(2.0))
+    7.389056098930650227230427461
 
     """
     x = Decimal(str(x))
@@ -68,6 +93,9 @@ def exp(x):
         s += num / fact
     getcontext().prec -= 2
     return +s
+
+def trunc(x):
+    return int(Decimal(str(x)).to_integral(rounding=decimal.ROUND_FLOOR))
 
 def _pi():
     """Hidden function to compute Pi to the current precision."""
@@ -96,22 +124,25 @@ class _Constants(object):
     @property
     def e(self):
         """Compute the base of the natural logarithm to the current precision."""
-        return exp(Decimal(1))
+        return exp(1)
 
     @property
     def phi(self):
         """Calculate the golden ratio to the current precision."""
-        return  +((1 + Decimal(5).sqrt()) / 2)
+        getcontext().prec += 2
+        goldenrat = +((1 + Decimal(5).sqrt()) / 2)
+        getcontext().prec -= 2
+        return goldenrat
     
     @property
     def inf(self):
         """Positive infinty."""
-        return  Decimal("Inf")
+        return  Decimal('Inf')
     
     @property
     def nan(self):
         """Not a Number."""
-        return  Decimal("NaN")
+        return  Decimal('NaN')
 
     def __getattr__(self, name):
         try:
@@ -123,12 +154,10 @@ class _Constants(object):
 def cos(x):
     """Return the cosine of x as measured in radians.
 
-    >>> print cos(Decimal('0.5'))
+    >>> print(cos(Decimal('0.5')))
     0.8775825618903727161162815826
-    >>> print cos(0.5)
-    0.87758256189
-    >>> print cos(0.5+0j)
-    (0.87758256189+0j)
+    >>> print(cos(0.5))
+    0.8775825618903727161162815826
 
     """
     x = Decimal(str(x)) % (2 * _pi())
@@ -149,12 +178,10 @@ def cos(x):
 def sin(x):
     """Return the sine of x as measured in radians.
 
-    >>> print sin(Decimal('0.5'))
+    >>> print(sin(Decimal('0.5')))
     0.4794255386042030002732879352
-    >>> print sin(0.5)
-    0.479425538604
-    >>> print sin(0.5+0j)
-    (0.479425538604+0j)
+    >>> print(sin(0.5))
+    0.4794255386042030002732879352
 
     """
     x = Decimal(str(x)) % (2 * _pi())
@@ -253,7 +280,7 @@ def asin(x):
     elif x == 1:
         return _pi() / 2
 
-    return atan2(x, Decimal(1 - x ** 2).sqrt())
+    return atan2(x, (1 - x ** 2).sqrt())
 
 # The version below is actually overwritten by the version using atan2 below
 # it, since it is much faster.
@@ -346,14 +373,6 @@ def atan(x):
     getcontext().prec -= 2
     return +s
 
-def sign(x):
-    """Return -1 for negative numbers and 1 for positive numbers."""
-    x = Decimal(str(x))
-    if x == Decimal('-0'):
-        return -1
-    else:
-        return 2 * Decimal(x >= 0) - 1
-
 def atan2(y, x):
     """Return the arc tangent (measured in radians) of y/x.
     Unlike atan(y/x), the signs of both x and y are considered.
@@ -376,28 +395,44 @@ def atan2(y, x):
             return _pi() * (Decimal(2) * abs(x) - x) / (Decimal(4) * y)
     if y:
         return atan(sign(y) * Decimal('Inf'))
-    elif x < 0:
+    elif sign(x) < 0:
         return sign(y) * _pi()
     else:
-        return Decimal(0)
+        return sign(y) * Decimal(0)
 
 def log(x, base=None):
     """log(x[, base]) -> the logarithm of Decimal x to the given Decimal base.
     If the base not specified, returns the natural logarithm (base e) of x.
     """
+    getcontext().prec += 4
+
     if base == None:
-        return Decimal(str(x)).ln()
+        res = Decimal(str(x)).ln()
 
     else:
-        return Decimal(str(x)).log10() / Decimal(str(base)).log10()
+        res = Decimal(str(x)).log10() / Decimal(str(base)).log10()
+    
+    getcontext().prec -= 4
+
+    return res
 
 def log10(x):
     """log10(x) -> the base 10 logarithm of Decimal x."""
-    return Decimal(str(x)).log10()
+    getcontext().prec += 4
+    res = Decimal(str(x)).log10()
+    getcontext().prec -= 4
+    return res 
+
+def log2(x):
+    """log2(x) -> the base 2 logarithm of Decimal x."""
+    return log(x, 2)
 
 def sqrt(x):
     """Return the square root of x."""
-    return Decimal(str(x)).sqrt()
+    getcontext().prec += 4
+    res = Decimal(str(x)).sqrt()
+    getcontext().prec -= 4
+    return res
 
 def pow(x, y):
     """Return x raised to the power y."""
@@ -405,11 +440,11 @@ def pow(x, y):
 
 def degrees(x):
     """degrees(x) -> converts Decimal angle x from radians to degrees"""
-    return +(Decimal(str(x)) * 180 / _pi())
+    return +(Decimal(str(x)) * (180 / _pi()))
 
 def radians(x):
     """radians(x) -> converts Decimal angle x from degrees to radians"""
-    return +(Decimal(str(x)) * _pi() / 180)
+    return +(Decimal(str(x)) * (_pi() / 180))
 
 def ceil(x):
     """Return the smallest integral value >= x."""
@@ -443,13 +478,48 @@ def copysign(x, y):
     x = Decimal(str(x))
     y = Decimal(str(y))
 
-    return x.copy_abs() * sign(y)
+    return x.copy_sign(y)
+
+def erfc(x):
+    """Return the complementary error function at x."""
+    # We approximate using a continued fraction which is able to give us arbitrary precision.
+    x = Decimal(str(x))
+    xsq = x**2
+
+    getcontext().prec += 2
+
+    k = getcontext().prec ** 2 # This could probably be optimised or even corrected...
+
+    if k % 2 == 0:
+        lstt = xsq
+    else:
+        lstt = Decimal(1)
+
+    while k > 0:
+        if k % 2 == 0:
+            lstt = 1 + (k/Decimal(2)) / lstt
+        else:
+            lstt = xsq + (k/Decimal(2)) / lstt
+        
+        k -= 1
+
+    res = (x / _pi().sqrt()) * exp(-xsq) * (1 / lstt)
+
+    getcontext().prec -= 2
+
+    return res
+
+def erf(x):
+    """Return the error function at x."""
+    # We are able to compute erfc(x) using a continued function so...
+    return 1 - erfc(x)
 
 sys.modules[__name__] = _Constants()
 
-__all__ = ['sign', 'ceil', 'floor', 'factorial', 'copysign',
-           'exp', 'log', 'log10', 'pow', 'sqrt',
+__all__ = ['sign', 'signt', 'ceil', 'floor', 'factorial', 'copysign', 'fabs', 'fsum', 'trunc',
+           'exp', 'log', 'log2', 'log10', 'pow', 'sqrt',
            'hypot', 'sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'atan2',
            'degrees', 'radians',
            'sinh', 'cosh', 'tanh',
+           'erf', 'erfc',
            'pi', 'e', 'tau', 'phi', 'inf', 'nan']

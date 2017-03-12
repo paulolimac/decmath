@@ -14,7 +14,7 @@ import os
 from decmath import __version__
 
 here = path.abspath(path.dirname(__file__))
-readme_path = path.join(here, 'README.md')
+readme_path = path.join(here, 'PyPI-info.rst')
 
 long_description = 'See https://github.com/ElecProg/decmath\n\n'
 
@@ -22,7 +22,6 @@ long_description = 'See https://github.com/ElecProg/decmath\n\n'
 if path.exists(readme_path):
     with open(readme_path, encoding='utf-8') as f:
         long_description += f.read()
-
 
 setup(
     name='DecMath',
