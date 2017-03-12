@@ -9,7 +9,6 @@ At this point decmath is rather stable but still under heavy development
 so if you have any suggestions or want to help out with a pull request
 definitely do so on `GitHub`_.
 
-This library builds upon dmath, a project by Brian Beck
-<exogen@gmail.com> and Christopher Hesse <christopher.hesse@gmail.com>.
+This library builds upon Brian Beck and Christopher Hesse's dmath.
 
 .. _GitHub: https://github.com/ElecProg/decmath
