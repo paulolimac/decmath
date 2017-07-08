@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-decmath v0.3.1
+decmath v0.3.2
 Copyright (c) 2016-2017 Evert Provoost <evert.provoost@gmail.com>
 
 Based on dmath 0.9:
@@ -28,7 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-__version__ = "v0.3.1"
+__version__ = "v0.3.2"
 
 # This library aims at implementing the standard math library, (and some extras)
 # starting with the most used funtions.
@@ -46,13 +46,14 @@ import math as _math
 
 ## Number-theoretic and representation functions
 
-def sign(x):
+def sign(x): 
     """Return -1 for negative numbers and 1 for positive numbers."""
     x = Decimal(str(x))
     return Decimal(1).copy_sign(x)
 
 def signt(x):
-    """Return -1 for negative numbers and 1 for positive numbers and 0 for zeroes and NaNs."""
+    """Return -1 for negative numbers and 1 for positive numbers and 0 for
+       zeroes and NaNs."""
     x = Decimal(str(x))
     if x == 0 or x.is_nan():
         return Decimal(0)
@@ -81,15 +82,17 @@ def floor(x):
     return Decimal(str(x)).to_integral(rounding=ROUND_FLOOR)
 
 def copysign(x, y):
-    """Return a float with the magnitude (absolute value) of x but the sign of y.
-       On platforms that support signed zeros, copysign(1.0, -0.0) returns -1.0."""
+    """Return a float with the magnitude (absolute value) of x but the sign of
+       y. On platforms that support signed zeros, copysign(1.0, -0.0)
+       returns -1.0."""
     x = Decimal(str(x))
     y = Decimal(str(y))
 
     return x.copy_sign(y)
 
 def factorial(x):
-    """Return x factorial. Raises ValueError if x is not integral or is negative."""
+    """Return x factorial. Raises ValueError if x is not integral or is
+       negative."""
     x = Decimal(str(x))
     x_i = int(x.to_integral_value())
     if Decimal(x_i) == x:
@@ -97,15 +100,58 @@ def factorial(x):
             return _math.factorial(x_i)
         
         else:
-            raise ValueError("Domain error: can't compute factorial of negative values.")
+            raise ValueError(
+                "Domain error: can't compute factorial of negative values.")
     
     else:
-        raise ValueError("Domain error: can't compute factorial of non-integral values.")
+        raise ValueError(
+            "Domain error: can't compute factorial of non-integral values.")
 
 def modf(x):
-    """Return the fractional and integer parts of x. Both results carry the sign of x."""
+    """Return the fractional and integer parts of x. Both results carry
+       the sign of x."""
     x = Decimal(str(x))
     return (sign(x) * (abs(x) - floor(abs(x))), sign(x) * floor(abs(x)))
+
+def remainder(x, y):
+    """Returns the remainder of x and y, using the remainder_near() function
+       in Decimal, which comes close to the function in the math library"""
+    return Decimal(str(x)).remainder_near(Decimal(str(y)))
+
+def isclose(a, b, *, rel_tol=Decimal(10)**-9, abs_tol=Decimal('0.0')):
+    """Return True if the values a and b are close to each other and False
+       otherwise. Whether or not two values are considered close is determined
+       according to given absolute and relative tolerances.
+
+       rel_tol is the relative tolerance –- it is the maximum allowed difference
+       between a and b, relative to the larger absolute value of a or b.
+       For example, to set a tolerance of 5%, pass rel_tol=0.05. The default
+       tolerance is 1e-09, which assures that the two values are the same within
+       about 9 decimal digits. rel_tol must be greater than zero.
+
+       abs_tol is the minimum absolute tolerance -– useful for comparisons near
+       zero. abs_tol must be at least zero.
+
+       If no errors occur, the result will be:
+       abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol).
+
+       The IEEE 754 special values of NaN, inf, and -inf will be handled
+       according to IEEE rules. Specifically, NaN is not considered close to any
+       other value, including NaN. inf and -inf are only considered close to
+       themselves."""
+    a = Decimal(str(a))
+    b = Decimal(str(b))
+    if a.is_nan() or b.is_nan():
+        return False
+    elif a.is_infinite() and b.is_infinite():
+        if sign(a) == sign(b):
+            return True
+        else:
+            return False
+    elif a.is_infinite() or b.is_infinite():
+        return False
+    else:
+        return abs(a - b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
 
 
 ## Power and logarithmic functions
@@ -131,16 +177,16 @@ def expm1(x):
 
 def _ln(x):
     """Hidden function that returns the natural logarithm of x (base e)."""
-    getcontext().prec += 4
+    getcontext().prec += 2
     res = Decimal(str(x)).ln()
-    getcontext().prec -= 4
+    getcontext().prec -= 2
     return res
 
 def log(x, base=None):
     """log(x[, base]) -> the logarithm of x to the given base.
     If the base not specified, returns the natural logarithm (base e) of x.
     """
-    getcontext().prec += 4
+    getcontext().prec += 2
 
     if base == None:
         res = Decimal(str(x)).ln()
@@ -148,16 +194,16 @@ def log(x, base=None):
     else:
         res = Decimal(str(x)).log10() / Decimal(str(base)).log10()
     
-    getcontext().prec -= 4
+    getcontext().prec -= 2
 
     return res
 
 def log1p(x):
     """Return the natural logarithm of 1+x (base e)."""
     # Decimal handles this perfecly so no need for complexity.
-    getcontext().prec += 4
+    getcontext().prec += 2
     res = (1 + Decimal(str(x))).ln()
-    getcontext().prec -= 4
+    getcontext().prec -= 2
     return res
 
 def log2(x):
@@ -166,23 +212,23 @@ def log2(x):
 
 def log10(x):
     """log10(x) -> the base 10 logarithm of x."""
-    getcontext().prec += 4
+    getcontext().prec += 2
     res = Decimal(str(x)).log10()
-    getcontext().prec -= 4
+    getcontext().prec -= 2
     return res 
 
 def pow(x, y):
     """Return x raised to the power y."""
-    getcontext().prec += 4
+    getcontext().prec += 2
     res = Decimal(str(x)).__pow__(Decimal(str(y)))
-    getcontext().prec -= 4
+    getcontext().prec -= 2
     return res
 
 def sqrt(x):
     """Return the square root of x."""
-    getcontext().prec += 4
+    getcontext().prec += 2
     res = Decimal(str(x)).sqrt()
-    getcontext().prec -= 4
+    getcontext().prec -= 2
     return res
 
 
@@ -420,13 +466,15 @@ def erf(x):
 
 def erfc(x):
     """Return the complementary error function at x."""
-    # We approximate using a continued fraction which is able to give us arbitrary precision.
+    # We approximate using a continued fraction which is able to give us
+    # arbitrary precision.
     x = Decimal(str(x))
     xsq = x**2
 
     getcontext().prec += 2
 
-    k = getcontext().prec ** 2 # This could probably be optimised or even corrected...
+    k = getcontext().prec ** 2 # This could probably be optimised or even
+                               # corrected...
 
     if k % 2 == 0:
         lstt = xsq
@@ -476,7 +524,8 @@ class _Constants(object):
     
     @property
     def e(self):
-        """Compute the base of the natural logarithm to the current precision."""
+        """Compute the base of the natural logarithm to the current
+           precision."""
         getcontext().prec += 2
         i, lasts, s, fact = 0, 0, 1, Decimal(1)
         while s != lasts:
@@ -510,11 +559,13 @@ class _Constants(object):
             return globals()[name]
         except KeyError:
             sys.tracebacklimit = 0
-            raise AttributeError("module '" + __name__ + "' has no attribute '" + str(name) + "'")
+            raise AttributeError("module '" + __name__ + "' has no attribute '"
+                + str(name) + "'")
 
 sys.modules[__name__] = _Constants()
 
-__all__ = ['sign', 'signt', 'ceil', 'floor', 'factorial', 'copysign', 'fabs', 'fsum',
+__all__ = ['sign', 'signt', 'ceil', 'floor', 'factorial', 'copysign', 'fabs',
+               'fsum', 'remainder',
            'exp', 'expm1', 'log', 'log1p', 'log2', 'log10', 'pow', 'sqrt',
            'hypot', 'sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'atan2',
            'degrees', 'radians',
@@ -526,6 +577,6 @@ __delibnotimpltd__ = ['gamma', 'lgamma',
                       'gcd', 'isnan', 'isinf', 'isfinite', 'trunc']
 
 # Now add the missing functions.
-for x in dir(_math):
-    if not x in globals().keys():
-        globals()[x] = getattr(_math, x)
+for funct in dir(_math):
+    if not funct in globals().keys():
+        globals()[funct] = getattr(_math, funct)
