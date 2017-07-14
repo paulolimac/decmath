@@ -46,40 +46,9 @@ import math as _math
 
 ## Number-theoretic and representation functions
 
-def sign(x): 
-    """Return -1 for negative numbers and 1 for positive numbers."""
-    x = Decimal(str(x))
-    return Decimal(1).copy_sign(x)
-
-def signt(x):
-    """Return -1 for negative numbers and 1 for positive numbers and 0 for
-       zeroes and NaNs."""
-    x = Decimal(str(x))
-    if x == 0 or x.is_nan():
-        return Decimal(0)
-    else:
-        return Decimal(1).copy_sign(x)
-
-def fabs(x):
-    """Return the absolute value of x."""
-    return Decimal(str(x)).copy_abs()
-
-def fsum(iterable):
-    """Return an accurate floating point sum of values in the iterable."""
-    sum = Decimal(0)
-
-    for term in iterable:
-        sum += Decimal(str(term))
-    
-    return sum
-
 def ceil(x):
     """Return the smallest integral value >= x."""
     return Decimal(str(x)).to_integral(rounding=ROUND_CEILING)
-
-def floor(x):
-    """Return the largest integral value <= x."""
-    return Decimal(str(x)).to_integral(rounding=ROUND_FLOOR)
 
 def copysign(x, y):
     """Return a float with the magnitude (absolute value) of x but the sign of
@@ -89,6 +58,10 @@ def copysign(x, y):
     y = Decimal(str(y))
 
     return x.copy_sign(y)
+
+def fabs(x):
+    """Return the absolute value of x."""
+    return Decimal(str(x)).copy_abs()
 
 def factorial(x):
     """Return x factorial. Raises ValueError if x is not integral or is
@@ -107,16 +80,31 @@ def factorial(x):
         raise ValueError(
             "Domain error: can't compute factorial of non-integral values.")
 
-def modf(x):
-    """Return the fractional and integer parts of x. Both results carry
-       the sign of x."""
-    x = Decimal(str(x))
-    return (sign(x) * (abs(x) - floor(abs(x))), sign(x) * floor(abs(x)))
+def floor(x):
+    """Return the largest integral value <= x."""
+    return Decimal(str(x)).to_integral(rounding=ROUND_FLOOR)
 
-def remainder(x, y):
+def fmod(x, y):
     """Returns the remainder of x and y, using the remainder_near() function
        in Decimal, which comes close to the function in the math library"""
     return Decimal(str(x)).remainder_near(Decimal(str(y)))
+
+def frexp(x):
+    """Return the mantissa and exponent of x as the pair (m, e). m is a Decimal
+       and e is an integer such that x == m * 2**e exactly. If x is zero,
+       returns (0.0, 0), otherwise 0.5 <= abs(m) < 1."""
+    e = _math.frexp(x)[1]
+    x = Decimal(str(x))
+    return (x / (Decimal(2**e)), e)
+
+def fsum(iterable):
+    """Return an accurate floating point sum of values in the iterable."""
+    sum = Decimal(0)
+
+    for term in iterable:
+        sum += Decimal(str(term))
+    
+    return sum
 
 def isclose(a, b, *, rel_tol=Decimal(10)**-9, abs_tol=Decimal('0.0')):
     """Return True if the values a and b are close to each other and False
@@ -152,6 +140,36 @@ def isclose(a, b, *, rel_tol=Decimal(10)**-9, abs_tol=Decimal('0.0')):
         return False
     else:
         return abs(a - b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
+
+def ldexp(x, i):
+    """Return x * (2**i). This is essentially the inverse of function
+       frexp()."""
+    return Decimal(str(x)) * (2**Decimal(str(i)))
+
+def modf(x):
+    """Return the fractional and integer parts of x. Both results carry
+       the sign of x."""
+    x = Decimal(str(x))
+    return (sign(x) * (abs(x) - floor(abs(x))), sign(x) * floor(abs(x)))
+
+def remainder(x, y):
+    """Returns the remainder of x and y, using the remainder_near() function
+       in Decimal, which comes close to the function in the math library"""
+    return Decimal(str(x)).remainder_near(Decimal(str(y)))
+
+def sign(x): 
+    """Return -1 for negative numbers and 1 for positive numbers."""
+    x = Decimal(str(x))
+    return Decimal(1).copy_sign(x)
+
+def signt(x):
+    """Return -1 for negative numbers and 1 for positive numbers and 0 for
+       zeroes and NaNs."""
+    x = Decimal(str(x))
+    if x == 0 or x.is_nan():
+        return Decimal(0)
+    else:
+        return Decimal(1).copy_sign(x)
 
 
 ## Power and logarithmic functions
@@ -234,47 +252,21 @@ def sqrt(x):
 
 ## Trigonometric functions
 
-def hypot(x, y):
-    """Return the Euclidean distance, sqrt(x*x + y*y)."""
-    return sqrt(Decimal(str(x)).__pow__(2) + Decimal(str(y)).__pow__(2))
+def acos(x):
+    """Return the arc cosine (measured in radians) of x."""
+    x = Decimal(str(x))
 
-def sin(x):
-    """Return the sine of x as measured in radians."""
-    x = Decimal(str(x)) % (2 * _pi())
-    if isnan(x):
-        return Decimal('NaN')
-    getcontext().prec += 2
-    i, lasts, s, fact, num, sign = 1, 0, x, 1, x, 1
-    while s != lasts:
-        lasts = s
-        i += 2
-        fact *= i * (i - 1)
-        num *= x * x
-        sign *= -1
-        s += num / fact * sign
-    getcontext().prec -= 2
-    return +s
+    if abs(x) > 1:
+        raise ValueError("Domain error: acos accepts -1 <= x <= 1.")
 
-def cos(x):
-    """Return the cosine of x as measured in radians."""
-    x = Decimal(str(x)) % (2 * _pi())
-    if isnan(x):
-        return Decimal('NaN')
-    getcontext().prec += 2
-    i, lasts, s, fact, num, sign = 0, 0, 1, 1, 1, 1
-    while s != lasts:
-        lasts = s
-        i += 2
-        fact *= i * (i - 1)
-        num *= x * x
-        sign *= -1
-        s += num / fact * sign
-    getcontext().prec -= 2
-    return +s
+    if x == -1:
+        return _pi()
+    elif x == 0:
+        return _pi() / 2
+    elif x == 1:
+        return Decimal(0)
 
-def tan(x):
-    """Return the tangent of x (measured in radians)."""
-    return +(sin(x) / cos(x))
+    return _pi() / 2 - sqrt(atan2(x, Decimal(1 - x ** 2)))
 
 def asin(x):
     """Return the arc sine (measured in radians) of x."""
@@ -291,22 +283,6 @@ def asin(x):
         return _pi() / 2
 
     return sqrt(atan2(x, (1 - x ** 2)))
-
-def acos(x):
-    """Return the arc cosine (measured in radians) of x."""
-    x = Decimal(str(x))
-
-    if abs(x) > 1:
-        raise ValueError("Domain error: acos accepts -1 <= x <= 1.")
-
-    if x == -1:
-        return _pi()
-    elif x == 0:
-        return _pi() / 2
-    elif x == 1:
-        return Decimal(0)
-
-    return _pi() / 2 - sqrt(atan2(x, Decimal(1 - x ** 2)))
 
 def atan(x):
     """Return the arc tangent (measured in radians) of x."""
@@ -371,6 +347,48 @@ def atan2(y, x):
     else:
         return sign(y) * Decimal(0)
 
+def cos(x):
+    """Return the cosine of x as measured in radians."""
+    x = Decimal(str(x)) % (2 * _pi())
+    if isnan(x):
+        return Decimal('NaN')
+    getcontext().prec += 2
+    i, lasts, s, fact, num, sign = 0, 0, 1, 1, 1, 1
+    while s != lasts:
+        lasts = s
+        i += 2
+        fact *= i * (i - 1)
+        num *= x * x
+        sign *= -1
+        s += num / fact * sign
+    getcontext().prec -= 2
+    return +s
+
+def hypot(x, y):
+    """Return the Euclidean distance, sqrt(x*x + y*y)."""
+    return sqrt(Decimal(str(x)).__pow__(2) + Decimal(str(y)).__pow__(2))
+
+def sin(x):
+    """Return the sine of x as measured in radians."""
+    x = Decimal(str(x)) % (2 * _pi())
+    if isnan(x):
+        return Decimal('NaN')
+    getcontext().prec += 2
+    i, lasts, s, fact, num, sign = 1, 0, x, 1, x, 1
+    while s != lasts:
+        lasts = s
+        i += 2
+        fact *= i * (i - 1)
+        num *= x * x
+        sign *= -1
+        s += num / fact * sign
+    getcontext().prec -= 2
+    return +s
+
+def tan(x):
+    """Return the tangent of x (measured in radians)."""
+    return +(sin(x) / cos(x))
+
 
 ## Angular conversion
 
@@ -385,23 +403,36 @@ def radians(x):
 
 ## Hyperbolic functions
 
-def sinh(x):
-    """Return the hyperbolic sine of x."""
+def acosh(x):
+    """Return the inverse hyperbolic cosine of x."""
     x = Decimal(str(x))
 
-    if x == 0:
-        return Decimal(0)
+    if abs(x) < 1:
+        raise ValueError("Domain error: acosh accepts x > 1.")
 
-    getcontext().prec += 2
-    i, lasts, s, fact, num = 1, 0, x, 1, x
-    while s != lasts:
-        lasts = s
-        i += 2
-        num *= x * x
-        fact *= i * (i - 1)
-        s += num / fact
-    getcontext().prec -= 2
-    return +s
+    elif abs(x) == 1:
+        return Decimal('0')
+
+    else:
+        return _ln(x + sqrt(x**2 - 1))
+
+def asinh(x):
+    """Return the inverse hyperbolic sine of x."""
+    x = Decimal(str(x))
+    return _ln(x + sqrt(1 + x**2))
+
+def atanh(x):
+    """Return the inverse hyperbolic tangent of x."""
+    x = Decimal(str(x))
+
+    if abs(x) > 1:
+        raise ValueError("Domain error: atanh accepts -1 <= x <= 1.")
+
+    elif abs(x) == 1:
+        return sign(x) * Decimal('Inf')
+
+    else:
+        return Decimal('0.5') * _ln((1 + x) / (1 - x))
 
 def cosh(x):
     """Return the hyperbolic cosine of x."""
@@ -421,40 +452,27 @@ def cosh(x):
     getcontext().prec -= 2
     return +s
 
+def sinh(x):
+    """Return the hyperbolic sine of x."""
+    x = Decimal(str(x))
+
+    if x == 0:
+        return Decimal(0)
+
+    getcontext().prec += 2
+    i, lasts, s, fact, num = 1, 0, x, 1, x
+    while s != lasts:
+        lasts = s
+        i += 2
+        num *= x * x
+        fact *= i * (i - 1)
+        s += num / fact
+    getcontext().prec -= 2
+    return +s
+
 def tanh(x):
     """Return the hyperbolic tangent of x."""
     return +(sinh(x) / cosh(x))
-
-def asinh(x):
-    """Return the inverse hyperbolic sine of x."""
-    x = Decimal(str(x))
-    return _ln(x + sqrt(1 + x**2))
-
-def acosh(x):
-    """Return the inverse hyperbolic cosine of x."""
-    x = Decimal(str(x))
-
-    if abs(x) < 1:
-        raise ValueError("Domain error: acosh accepts x > 1.")
-
-    elif abs(x) == 1:
-        return Decimal('0')
-
-    else:
-        return _ln(x + sqrt(x**2 - 1))
-
-def atanh(x):
-    """Return the inverse hyperbolic tangent of x."""
-    x = Decimal(str(x))
-
-    if abs(x) > 1:
-        raise ValueError("Domain error: atanh accepts -1 <= x <= 1.")
-
-    elif abs(x) == 1:
-        return sign(x) * Decimal('Inf')
-
-    else:
-        return Decimal('0.5') * _ln((1 + x) / (1 - x))
 
 
 ## Special functions
@@ -512,16 +530,20 @@ def _pi():
     return +s
 
 class _Constants(object):
+
+    @property
+    def phi(self):
+        """Calculate the golden ratio to the current precision."""
+        getcontext().prec += 2
+        goldenrat = +((1 + sqrt(Decimal(5))) / 2)
+        getcontext().prec -= 2
+        return goldenrat
+
     @property
     def pi(self):
         """Compute Pi to the current precision."""
         return _pi()
-    
-    @property
-    def tau(self):
-        """Compute Tau to the current precision."""
-        return 2 * _pi()
-    
+
     @property
     def e(self):
         """Compute the base of the natural logarithm to the current
@@ -537,13 +559,10 @@ class _Constants(object):
         return +s
 
     @property
-    def phi(self):
-        """Calculate the golden ratio to the current precision."""
-        getcontext().prec += 2
-        goldenrat = +((1 + sqrt(Decimal(5))) / 2)
-        getcontext().prec -= 2
-        return goldenrat
-    
+    def tau(self):
+        """Compute Tau to the current precision."""
+        return 2 * _pi()
+
     @property
     def inf(self):
         """Positive infinty."""
@@ -558,20 +577,20 @@ class _Constants(object):
         try:
             return globals()[name]
         except KeyError:
-            sys.tracebacklimit = 0
+            sys.tracebacklimit = 1
             raise AttributeError("module '" + __name__ + "' has no attribute '"
                 + str(name) + "'")
 
 sys.modules[__name__] = _Constants()
 
-__all__ = ['sign', 'signt', 'ceil', 'floor', 'factorial', 'copysign', 'fabs',
-               'fsum', 'remainder',
+__all__ = ['ceil', 'copysign', 'fabs', 'factorial', 'floor', 'fmod', 'frexp',
+               'fsum', 'isclose', 'ldexp', 'modf', 'remainder', 'sign', 'signt',
            'exp', 'expm1', 'log', 'log1p', 'log2', 'log10', 'pow', 'sqrt',
-           'hypot', 'sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'atan2',
+           'acos', 'asin', 'atan', 'atan2', 'cos', 'hypot', 'sin', 'tan',
            'degrees', 'radians',
-           'sinh', 'cosh', 'tanh', 'asinh', 'acosh', 'atanh',
+           'acosh', 'asinh', 'atanh', 'cosh', 'sinh', 'tanh',
            'erf', 'erfc',
-           'pi', 'e', 'tau', 'phi', 'inf', 'nan']
+           'phi', 'pi', 'e', 'tau', 'inf', 'nan']
 
 __delibnotimpltd__ = ['gamma', 'lgamma',
                       'gcd', 'isnan', 'isinf', 'isfinite', 'trunc']
