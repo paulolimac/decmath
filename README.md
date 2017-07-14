@@ -1,6 +1,8 @@
 DecMath
 =======
 
+[![Build Status](https://travis-ci.org/ElecProg/decmath.svg?branch=master)](https://travis-ci.org/ElecProg/decmath)[![Coverage Status](https://coveralls.io/repos/github/ElecProg/decmath/badge.svg?branch=master)](https://coveralls.io/github/ElecProg/decmath?branch=master)
+
 Reimplementing the standard math library to give compatibility
 with Decimal by delivering arbitrary precision.
 
