@@ -479,38 +479,30 @@ def tanh(x):
 
 def erf(x):
     """Return the error function at x."""
-    # We are able to compute erfc(x) using a continued fraction so...
-    return 1 - erfc(x)
+    if x >= getcontext().prec / 10 + 6:
+        return Decimal(1) # This isn't worth the computation time.
+    else:
+        # We are able to compute erfc(x) using a continued fraction so...
+        return 1 - erfc(x)
 
 def erfc(x):
     """Return the complementary error function at x."""
     # We approximate using a continued fraction which is able to give us
     # arbitrary precision.
-    x = Decimal(str(x))
-    xsq = x**2
+    x = Decimal(str(x)) 
 
-    getcontext().prec += 2
-
+    getcontext().prec += int(ceil(x)) ** 2 + 2
     k = getcontext().prec ** 2 # This could probably be optimised or even
                                # corrected...
 
-    if k % 2 == 0:
-        lstt = xsq
-    else:
-        lstt = Decimal(1)
+    lstt = x
 
     while k > 0:
-        if k % 2 == 0:
-            lstt = 1 + (k/Decimal(2)) / lstt
-        else:
-            lstt = xsq + (k/Decimal(2)) / lstt
-        
+        lstt = 2*x + Decimal(2 * k) / lstt
         k -= 1
 
-    res = (x / sqrt(_pi())) * exp(-xsq) * (1 / lstt)
-
-    getcontext().prec -= 2
-
+    res = 2 * exp(-x ** 2) / sqrt(_pi()) * (1 / lstt)
+    getcontext().prec -= int(ceil(x)) ** 2 + 2
     return res
 
 
