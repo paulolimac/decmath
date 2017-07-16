@@ -266,7 +266,19 @@ def acos(x):
     elif x == 1:
         return Decimal(0)
 
-    return _pi() / 2 - sqrt(atan2(x, Decimal(1 - x ** 2)))
+    getcontext().prec += 2
+    one_half = Decimal('0.5')
+    i, lasts, s, gamma, fact, num = Decimal(0), 0, _pi() / 2 - x, 1, 1, x
+    while s != lasts:
+        lasts = s
+        i += 1
+        fact *= i
+        num *= x * x
+        gamma *= i - one_half
+        coeff = gamma / ((2 * i + 1) * fact)
+        s -= coeff * num
+    getcontext().prec -= 2
+    return +s
 
 def asin(x):
     """Return the arc sine (measured in radians) of x."""
@@ -276,20 +288,32 @@ def asin(x):
         raise ValueError("Domain error: asin accepts -1 <= x <= 1.")
 
     if x == -1:
-        return _pi() / -2
+        return -_pi() / 2
     elif x == 0:
         return Decimal(0)
     elif x == 1:
         return _pi() / 2
 
-    return sqrt(atan2(x, (1 - x ** 2)))
+    getcontext().prec += 2
+    one_half = Decimal('0.5')
+    i, lasts, s, gamma, fact, num = Decimal(0), 0, x, 1, 1, x
+    while s != lasts:
+        lasts = s
+        i += 1
+        fact *= i
+        num *= x * x
+        gamma *= i - one_half
+        coeff = gamma / ((2 * i + 1) * fact)
+        s += coeff * num
+    getcontext().prec -= 2
+    return +s
 
 def atan(x):
     """Return the arc tangent (measured in radians) of x."""
     x = Decimal(str(x))
 
     if x == Decimal('-Inf'):
-        return _pi() / -2
+        return -_pi() / 2
     elif x == 0:
         return Decimal(0)
     elif x == Decimal('Inf'):
@@ -350,8 +374,12 @@ def atan2(y, x):
 def cos(x):
     """Return the cosine of x as measured in radians."""
     x = Decimal(str(x)) % (2 * _pi())
+
     if isnan(x):
         return Decimal('NaN')
+    elif x == _pi() / 2 or x == 3 * _pi() / 2:
+        return Decimal(0)
+
     getcontext().prec += 2
     i, lasts, s, fact, num, sign = 0, 0, 1, 1, 1, 1
     while s != lasts:
@@ -371,8 +399,12 @@ def hypot(x, y):
 def sin(x):
     """Return the sine of x as measured in radians."""
     x = Decimal(str(x)) % (2 * _pi())
+
     if isnan(x):
         return Decimal('NaN')
+    elif x == 0 or x == _pi():
+        return Decimal(0)
+
     getcontext().prec += 2
     i, lasts, s, fact, num, sign = 1, 0, x, 1, x, 1
     while s != lasts:
@@ -387,6 +419,12 @@ def sin(x):
 
 def tan(x):
     """Return the tangent of x (measured in radians)."""
+    if isnan(x):
+        return Decimal('NaN')
+    elif x == _pi() / 2:
+        return Decimal('Inf')
+    elif x == 3 * _pi() / 2:
+        return Decimal('-Inf')
     return +(sin(x) / cos(x))
 
 
