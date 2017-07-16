@@ -206,7 +206,7 @@ def log(x, base=None):
     else:
         res = Decimal(str(x)).log10() / Decimal(str(base)).log10()
 
-    return res
+    return +res
 
 def log1p(x):
     """Return the natural logarithm of 1+x (base e)."""
@@ -326,8 +326,7 @@ def atan(x):
 
 def atan2(y, x):
     """Return the arc tangent (measured in radians) of y/x.
-    Unlike atan(y/x), the signs of both x and y are considered.
-    """
+    Unlike atan(y/x), the signs of both x and y are considered."""
     y = Decimal(str(y))
     x = Decimal(str(x))
     abs_y = abs(y)
@@ -405,18 +404,18 @@ def tan(x):
         return Decimal('Inf')
     elif x == 3 * _pi() / 2:
         return Decimal('-Inf')
-    return +(sin(x) / cos(x))
+    return sin(x) / cos(x)
 
 
 ## Angular conversion
 
 def degrees(x):
     """degrees(x) -> converts angle x from radians to degrees"""
-    return +(Decimal(str(x)) / _pi() * 180)
+    return Decimal(str(x)) * 180 / _pi()
 
 def radians(x):
     """radians(x) -> converts angle x from degrees to radians"""
-    return +(Decimal(str(x)) * _pi() / 180)
+    return Decimal(str(x)) * _pi() / 180
 
 
 ## Hyperbolic functions
@@ -521,13 +520,14 @@ def erfc(x):
 
     res = 2 * exp(-x ** 2) / sqrt(_pi()) * (1 / lstt)
     getcontext().prec -= int(ceil(x)) ** 2 + 2
-    return res
+    return +res
 
 
 ## Constants
 
 def _pi():
     """Hidden function to compute Pi to the current precision."""
+    getcontext().prec += 2
     lasts, t, s, n, na, d, da = 0, Decimal(3), 3, 1, 0, 0, 24
     while s != lasts:
         lasts = s
@@ -535,6 +535,7 @@ def _pi():
         d, da = d + da, da + 32
         t = (t * n) / d
         s += t
+    getcontext().prec -= 2
     return +s
 
 class _Constants(object):
@@ -542,7 +543,7 @@ class _Constants(object):
     @property
     def phi(self):
         """Calculate the golden ratio to the current precision."""
-        goldenrat = +((1 + sqrt(Decimal(5))) / 2)
+        goldenrat = (1 + sqrt(Decimal(5))) / 2
         return goldenrat
 
     @property
