@@ -3,6 +3,7 @@ sys.path.append('..')
 
 import decmath as dm
 import math as m
+import pytest as pt
 from decimal import Decimal as D
 
 def abteq(a, b):
