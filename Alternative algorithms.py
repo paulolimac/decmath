@@ -28,7 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-# This document contains some alternative algorithms which are usualy slower, however they might be better...
+# This document contains some alternative algorithms which are usualy slower,
+# however they might be better...
 
 def asin(x):
     """Return the arc sine (measured in radians) of x."""
