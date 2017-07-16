@@ -195,34 +195,23 @@ def expm1(x):
 
 def _ln(x):
     """Hidden function that returns the natural logarithm of x (base e)."""
-    getcontext().prec += 2
-    res = Decimal(str(x)).ln()
-    getcontext().prec -= 2
-    return res
+    return Decimal(str(x)).ln()
 
 def log(x, base=None):
     """log(x[, base]) -> the logarithm of x to the given base.
-    If the base not specified, returns the natural logarithm (base e) of x.
-    """
-    getcontext().prec += 2
-
+    If the base not specified, returns the natural logarithm (base e) of x."""
     if base == None:
         res = Decimal(str(x)).ln()
 
     else:
         res = Decimal(str(x)).log10() / Decimal(str(base)).log10()
-    
-    getcontext().prec -= 2
 
     return res
 
 def log1p(x):
     """Return the natural logarithm of 1+x (base e)."""
     # Decimal handles this perfecly so no need for complexity.
-    getcontext().prec += 2
-    res = (1 + Decimal(str(x))).ln()
-    getcontext().prec -= 2
-    return res
+    return (1 + Decimal(str(x))).ln()
 
 def log2(x):
     """log2(x) -> the base 2 logarithm of x."""
@@ -230,24 +219,15 @@ def log2(x):
 
 def log10(x):
     """log10(x) -> the base 10 logarithm of x."""
-    getcontext().prec += 2
-    res = Decimal(str(x)).log10()
-    getcontext().prec -= 2
-    return res 
+    return Decimal(str(x)).log10()
 
 def pow(x, y):
     """Return x raised to the power y."""
-    getcontext().prec += 2
-    res = Decimal(str(x)).__pow__(Decimal(str(y)))
-    getcontext().prec -= 2
-    return res
+    return Decimal(str(x)).__pow__(Decimal(str(y)))
 
 def sqrt(x):
     """Return the square root of x."""
-    getcontext().prec += 2
-    res = Decimal(str(x)).sqrt()
-    getcontext().prec -= 2
-    return res
+    return Decimal(str(x)).sqrt()
 
 
 ## Trigonometric functions
@@ -432,11 +412,11 @@ def tan(x):
 
 def degrees(x):
     """degrees(x) -> converts angle x from radians to degrees"""
-    return +(Decimal(str(x)) * (180 / _pi()))
+    return +(Decimal(str(x)) / _pi() * 180)
 
 def radians(x):
     """radians(x) -> converts angle x from degrees to radians"""
-    return +(Decimal(str(x)) * (_pi() / 180))
+    return +(Decimal(str(x)) * _pi() / 180)
 
 
 ## Hyperbolic functions
@@ -548,7 +528,6 @@ def erfc(x):
 
 def _pi():
     """Hidden function to compute Pi to the current precision."""
-    getcontext().prec += 2
     lasts, t, s, n, na, d, da = 0, Decimal(3), 3, 1, 0, 0, 24
     while s != lasts:
         lasts = s
@@ -556,7 +535,6 @@ def _pi():
         d, da = d + da, da + 32
         t = (t * n) / d
         s += t
-    getcontext().prec -= 2
     return +s
 
 class _Constants(object):
@@ -564,9 +542,7 @@ class _Constants(object):
     @property
     def phi(self):
         """Calculate the golden ratio to the current precision."""
-        getcontext().prec += 2
         goldenrat = +((1 + sqrt(Decimal(5))) / 2)
-        getcontext().prec -= 2
         return goldenrat
 
     @property
