@@ -10,11 +10,11 @@ def test_expm1():
     assert abteq(dm.expm1(.7), m.expm1(.7))
 
 def test_log():
-    assert abteq(dm.log(dm.e), 1), "This isn't exact!"
+    assert msteq(dm.log(dm.e), 1) # This isn't exact!
     assert abteq(dm.log(3, 4), m.log(3, 4))
 
 def test_log1p():
-    assert abteq(dm.log1p(dm.e - 1), 1), "This isn't exact!"
+    assert msteq(dm.log1p(dm.e - 1), 1) # This isn't exact!
     assert abteq(dm.log1p(3), m.log1p(3))
 
 def test_log2():
