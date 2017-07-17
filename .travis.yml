@@ -10,7 +10,7 @@ install:
   - pip install codecov
 
 script:
-  - python -m pytest --cov=./decmath.py
+  - python -m pytest --cov=decmath.py
 
 after_succes:
   - codecov
