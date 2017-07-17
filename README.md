@@ -1,8 +1,10 @@
 DecMath
 =======
 
-[![Build Status](https://travis-ci.org/ElecProg/decmath.svg?branch=master)](
-    https://travis-ci.org/ElecProg/decmath)
+[![Build Status](https://travis-ci.org/ElecProg/decmath.svg?branch=master
+    )](https://travis-ci.org/ElecProg/decmath)
+[![codecov](https://codecov.io/gh/ElecProg/decmath/branch/master/graph/badge.svg
+    )](https://codecov.io/gh/ElecProg/decmath)
 
 A reimplementation of the standard math library to give compatibility with
 Decimal by delivering arbitrary precision.
