@@ -37,7 +37,7 @@ __version__ = "v0.3.2"
 
 import sys
 
-if sys.version_info[0] != 3:
+if sys.version_info.major != 3:
     raise ImportError("DecMath requires Python 3.")
 
 from decimal import Decimal, getcontext, ROUND_FLOOR, ROUND_CEILING
