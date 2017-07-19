@@ -193,10 +193,6 @@ def expm1(x):
     # Decimal handles this perfecly so no need for complexity
     return exp(x) - 1
 
-def _ln(x):
-    """Hidden function that returns the natural logarithm of x (base e)."""
-    return Decimal(str(x)).ln()
-
 def log(x, base=None):
     """log(x[, base]) -> the logarithm of x to the given base.
     If the base not specified, returns the natural logarithm (base e) of x."""
@@ -440,12 +436,12 @@ def acosh(x):
         return Decimal('0')
 
     else:
-        return _ln(x + sqrt(x**2 - 1))
+        return (x + sqrt(x**2 - 1)).ln()
 
 def asinh(x):
     """Return the inverse hyperbolic sine of x."""
     x = Decimal(str(x))
-    return _ln(x + sqrt(1 + x**2))
+    return (x + sqrt(1 + x**2)).ln()
 
 def atanh(x):
     """Return the inverse hyperbolic tangent of x."""
@@ -458,7 +454,7 @@ def atanh(x):
         return sign(x) * Decimal('Inf')
 
     else:
-        return Decimal('0.5') * _ln((1 + x) / (1 - x))
+        return Decimal('0.5') * ((1 + x) / (1 - x)).ln()
 
 def cosh(x):
     """Return the hyperbolic cosine of x."""
