@@ -236,10 +236,11 @@ def acos(x):
     """Return the arc cosine (measured in radians) of x."""
     x = Decimal(str(x))
 
-    if abs(x) > 1:
+    if x.is_nan():
+        return Decimal("NaN")
+    elif abs(x) > 1:
         raise ValueError("Domain error: acos accepts -1 <= x <= 1.")
-
-    if x == -1:
+    elif x == -1:
         return _pi()
     elif x == 0:
         return _pi() / 2
@@ -264,10 +265,11 @@ def asin(x):
     """Return the arc sine (measured in radians) of x."""
     x = Decimal(str(x))
 
-    if abs(x) > 1:
+    if x.is_nan():
+        return Decimal("NaN")
+    elif abs(x) > 1:
         raise ValueError("Domain error: asin accepts -1 <= x <= 1.")
-
-    if x == -1:
+    elif x == -1:
         return -_pi() / 2
     elif x == 0:
         return Decimal(0)
@@ -292,7 +294,9 @@ def atan(x):
     """Return the arc tangent (measured in radians) of x."""
     x = Decimal(str(x))
 
-    if x == Decimal('-Inf'):
+    if x.is_nan():
+        return Decimal("NaN")
+    elif x == Decimal('-Inf'):
         return -_pi() / 2
     elif x == 0:
         return Decimal(0)
@@ -333,6 +337,9 @@ def atan2(y, x):
     abs_x = abs(x)
     y_is_real = abs_y != Decimal('Inf')
 
+    if y.is_nan() or x.is_nan():
+        return Decimal("NaN")
+
     if x:
         if y_is_real:
             a = y and atan(y / x) or Decimal(0)
@@ -354,7 +361,7 @@ def cos(x):
     """Return the cosine of x as measured in radians."""
     x = Decimal(str(x)) % (2 * _pi())
 
-    if isnan(x):
+    if x.is_nan():
         return Decimal('NaN')
     elif x == _pi() / 2 or x == 3 * _pi() / 2:
         return Decimal(0)
@@ -379,7 +386,7 @@ def sin(x):
     """Return the sine of x as measured in radians."""
     x = Decimal(str(x)) % (2 * _pi())
 
-    if isnan(x):
+    if x.is_nan():
         return Decimal('NaN')
     elif x == 0 or x == _pi():
         return Decimal(0)
@@ -398,7 +405,9 @@ def sin(x):
 
 def tan(x):
     """Return the tangent of x (measured in radians)."""
-    if isnan(x):
+    x = Decimal(str(x))
+
+    if x.is_nan():
         return Decimal('NaN')
     elif x == _pi() / 2:
         return Decimal('Inf')

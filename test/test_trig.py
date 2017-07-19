@@ -9,6 +9,7 @@ def test_acos():
     assert abteq(dm.acos(-.5), m.acos(-.5))
     assert pt.raises(ValueError, "dm.acos(1.1)")
     assert pt.raises(ValueError, "dm.acos(-1.1)")
+    assert m.isnan(dm.acos(D("NaN")))
 
 def test_asin():
     assert dm.asin(-1) == -dm.pi/2
@@ -18,6 +19,7 @@ def test_asin():
     assert abteq(dm.asin(-.5), m.asin(-.5))
     assert pt.raises(ValueError, "dm.asin(1.1)")
     assert pt.raises(ValueError, "dm.asin(-1.1)")
+    assert m.isnan(dm.asin(D("NaN")))
 
 def test_atan():
     assert dm.atan(D("Inf")) == dm.pi/2
@@ -25,6 +27,7 @@ def test_atan():
     assert dm.atan(0) == 0
     assert abteq(dm.atan(.5), m.atan(.5))
     assert abteq(dm.atan(-.5), m.atan(-.5))
+    assert m.isnan(dm.atan(D("NaN")))
 
 def test_atan2():
     assert abteq(dm.atan2(.5, .4), m.atan2(.5, .4))
@@ -43,6 +46,11 @@ def test_atan2():
     assert abteq(dm.atan2(D("-Inf"), D("Inf")), m.atan2(D("-Inf"), D("Inf")))
     assert abteq(dm.atan2(D("Inf"), D("-Inf")), m.atan2(D("Inf"), D("-Inf")))
     assert abteq(dm.atan2(D("-Inf"), D("-Inf")), m.atan2(D("-Inf"), D("-Inf")))
+    assert abteq(dm.atan2(0, 1), m.atan2(0, 1))
+    assert abteq(dm.atan2(0, -1), m.atan2(0, -1))
+    assert m.isnan(dm.atan2(D("NaN"), 1))
+    assert m.isnan(dm.atan2(1, D("NaN")))
+    assert m.isnan(dm.atan2(D("NaN"), D("NaN")))
 
 def test_cos():
     assert dm.cos(0) == 1
@@ -51,6 +59,7 @@ def test_cos():
     assert dm.cos(3 * dm.pi/2) == 0
     assert abteq(dm.cos(3), m.cos(3))
     assert abteq(dm.cos(-5), m.cos(-5))
+    assert m.isnan(dm.cos(D("NaN")))
 
 def test_hypot():
     assert dm.hypot(1, 1) == dm.sqrt(2)
@@ -64,6 +73,7 @@ def test_sin():
     assert dm.sin(3 * dm.pi/2) == -1
     assert abteq(dm.sin(3), m.sin(3))
     assert abteq(dm.sin(-5), m.sin(-5))
+    assert m.isnan(dm.sin(D("NaN")))
 
 def test_tan():
     assert dm.tan(0) == 0
@@ -72,3 +82,4 @@ def test_tan():
     assert dm.tan(3 * dm.pi/2) == D('-Inf')
     assert abteq(dm.tan(3), m.tan(3))
     assert abteq(dm.tan(-5), m.tan(-5))
+    assert m.isnan(dm.tan(D("NaN")))
