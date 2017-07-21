@@ -7,7 +7,7 @@ def test_degrees():
     assert abteq(dm.degrees(-.5), m.degrees(-.5))
     assert abteq(dm.degrees(-7.1), m.degrees(-7.1))
     assert dm.degrees(dm.pi) == 180
-    assert msteq(dm.degrees(dm.pi/2), 90) # This isn't exact!
+    assert dm.degrees(dm.pi/2), 90
 
 def test_radians():
     assert abteq(dm.radians(.5), m.radians(.5))
