@@ -12,14 +12,9 @@ import os
 from decmath import __version__
 
 here = path.abspath(path.dirname(__file__))
-readme_path = path.join(here, 'PyPI-info.rst')
-
-long_description = 'See https://github.com/ElecProg/decmath\n\n'
-
-# Get the long description from the README file, and add it.
-if path.exists(readme_path):
-    with open(readme_path, encoding='utf-8') as f:
-        long_description += f.read()
+readme_path = path.join(here, 'README.rst')
+with open(readme_path, encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
     name='DecMath',
@@ -35,8 +30,11 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3 :: Only',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Mathematics',
     ],
     keywords='math Decimal',
-    py_modules=['decmath'],
+    python_requires='>=3',
+    packages=['decmath']
 )
