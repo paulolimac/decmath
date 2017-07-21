@@ -32,8 +32,8 @@ import sys
 import math
 from decimal import getcontext, Decimal
 
-if sys.version_info.major != 3:
-    raise ImportError("DecMath requires Python 3.")
+if not sys.version_info >= (3, 4):
+    raise ImportError("DecMath requires Python 3.4 or higher.")
 
 # This constant has to be available to the other parts of DecMath.
 def _pi():

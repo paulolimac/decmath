@@ -34,6 +34,6 @@ setup(
         'Topic :: Scientific/Engineering :: Mathematics',
     ],
     keywords='math Decimal',
-    python_requires='>=3',
+    python_requires='>=3.4',
     packages=['decmath']
 )
