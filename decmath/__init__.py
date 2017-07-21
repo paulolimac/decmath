@@ -1,6 +1,6 @@
 """
-decmath v0.3.2
-Copyright (c) 2016-2017 Evert Provoost <evert.provoost@gmail.com>
+decmath v0.4.0
+Copyright (c) 2016-present Evert Provoost <evert.provoost@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -21,7 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-__version__ = "0.3.2"
+__version__ = "0.4.0"
 
 # This library aims at implementing the standard math library, (and some extras)
 # starting with the most used funtions.
@@ -35,6 +35,7 @@ from decimal import getcontext, Decimal
 if sys.version_info.major != 3:
     raise ImportError("DecMath requires Python 3.")
 
+# This constant has to be available to the other parts of DecMath.
 def _pi():
     """Hidden function to compute Pi to the current precision."""
     getcontext().prec += 2
@@ -48,15 +49,16 @@ def _pi():
     getcontext().prec -= 2
     return +s
 
-from .num_repr import *
-from .pow_log import *
-from .trig import *
-from .ang_conv import *
-from .hyper import *
-from .special import *
+# Import the subfiles into the decmath namespace.
+from decmath.num_repr import *
+from decmath.pow_log import *
+from decmath.trig import *
+from decmath.ang_conv import *
+from decmath.hyper import *
+from decmath.special import *
 
-# Now add the constants using some neat/hacky code :)
-class _Constants():
+# Now add the constants using some neat/hacky code...
+class _Constants:
 
     @property
     def phi(self):
@@ -66,16 +68,7 @@ class _Constants():
     @property
     def pi(self):
         """Compute Pi to the current precision."""
-        getcontext().prec += 2
-        lasts, t, s, n, na, d, da = 0, Decimal(3), 3, 1, 0, 0, 24
-        while s != lasts:
-            lasts = s
-            n, na = n + na, na + 8
-            d, da = d + da, da + 32
-            t = (t * n) / d
-            s += t
-        getcontext().prec -= 2
-        return +s
+        return _pi()
 
     @property
     def e(self):
@@ -94,16 +87,7 @@ class _Constants():
     @property
     def tau(self):
         """Compute Tau to the current precision."""
-        getcontext().prec += 2
-        lasts, t, s, n, na, d, da = 0, Decimal(3), 3, 1, 0, 0, 24
-        while s != lasts:
-            lasts = s
-            n, na = n + na, na + 8
-            d, da = d + da, da + 32
-            t = (t * n) / d
-            s += t
-        getcontext().prec -= 2
-        return 2 * (+s)
+        return 2 * _pi()
 
     @property
     def inf(self):

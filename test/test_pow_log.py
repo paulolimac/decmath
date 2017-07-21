@@ -11,6 +11,7 @@ def test_expm1():
 
 def test_log():
     assert msteq(dm.log(dm.e), 1) # This isn't exact!
+    assert dm.log(100, 10) == 2
     assert abteq(dm.log(3, 4), m.log(3, 4))
 
 def test_log1p():

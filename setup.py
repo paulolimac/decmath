@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 setup.py for the Python packager
@@ -19,7 +18,7 @@ with open(readme_path, encoding='utf-8') as f:
 setup(
     name='DecMath',
     version=__version__,
-    description='The standard math library in Decimal and some extras...',
+    description='The standard math library in Decimal and some extras.',
     long_description=long_description,
     url='https://github.com/ElecProg/decmath',
     author='Evert Provoost',
