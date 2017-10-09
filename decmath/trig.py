@@ -1,7 +1,8 @@
 from decimal import getcontext, Decimal
 from decmath import _pi, sign
 
-## Trigonometric functions
+# Trigonometric functions
+
 
 def acos(x):
     """Return the arc cosine (measured in radians) of x."""
@@ -32,6 +33,7 @@ def acos(x):
     getcontext().prec -= 2
     return +s
 
+
 def asin(x):
     """Return the arc sine (measured in radians) of x."""
     x = Decimal(str(x))
@@ -61,6 +63,7 @@ def asin(x):
     getcontext().prec -= 2
     return +s
 
+
 def atan(x):
     """Return the arc tangent (measured in radians) of x."""
     x = Decimal(str(x))
@@ -84,7 +87,7 @@ def atan(x):
         c = 0
 
     getcontext().prec += 2
-    x_squared = x ** 2
+    x_squared = x**2
     y = x_squared / (1 + x_squared)
     y_over_x = y / x
     i, lasts, s, coeff, num = Decimal(0), 0, y_over_x, 1, y_over_x
@@ -98,6 +101,7 @@ def atan(x):
         s = c - s
     getcontext().prec -= 2
     return +s
+
 
 def atan2(y, x):
     """Return the arc tangent (measured in radians) of y/x.
@@ -128,6 +132,7 @@ def atan2(y, x):
     else:
         return sign(y) * Decimal(0)
 
+
 def cos(x):
     """Return the cosine of x as measured in radians."""
     x = Decimal(str(x)) % (2 * _pi())
@@ -149,9 +154,11 @@ def cos(x):
     getcontext().prec -= 2
     return +s
 
+
 def hypot(x, y):
     """Return the Euclidean distance, sqrt(x*x + y*y)."""
     return (Decimal(str(x)).__pow__(2) + Decimal(str(y)).__pow__(2)).sqrt()
+
 
 def sin(x):
     """Return the sine of x as measured in radians."""
@@ -173,6 +180,7 @@ def sin(x):
         s += num / fact * sign
     getcontext().prec -= 2
     return +s
+
 
 def tan(x):
     """Return the tangent of x (measured in radians)."""

@@ -35,6 +35,7 @@ from decimal import getcontext, Decimal
 if not sys.version_info >= (3, 4):
     raise ImportError("DecMath requires Python 3.4 or higher.")
 
+
 # This constant has to be available to the other parts of DecMath.
 def _pi():
     """Hidden function to compute Pi to the current precision."""
@@ -49,6 +50,7 @@ def _pi():
     getcontext().prec -= 2
     return +s
 
+
 # Import the subfiles into the decmath namespace.
 from decmath.num_repr import *
 from decmath.pow_log import *
@@ -57,9 +59,9 @@ from decmath.ang_conv import *
 from decmath.hyper import *
 from decmath.special import *
 
+
 # Now add the constants using some neat/hacky code...
 class _Constants:
-
     @property
     def phi(self):
         """Calculate the golden ratio to the current precision."""
@@ -92,12 +94,12 @@ class _Constants:
     @property
     def inf(self):
         """Positive infinty."""
-        return  Decimal('Inf')
-    
+        return Decimal('Inf')
+
     @property
     def nan(self):
         """Not a Number."""
-        return  Decimal('NaN')
+        return Decimal('NaN')
 
     def __getattr__(self, name):
         try:
@@ -105,21 +107,23 @@ class _Constants:
         except KeyError:
             sys.tracebacklimit = 1
             raise AttributeError("module '" + __name__ + "' has no attribute '"
-                + str(name) + "'")
+                                 + str(name) + "'")
+
 
 sys.modules[__name__] = _Constants()
 
-__all__ = ['ceil', 'copysign', 'fabs', 'factorial', 'floor', 'fmod', 'frexp',
-               'fsum', 'isclose', 'ldexp', 'modf', 'remainder', 'sign', 'signt',
-           'exp', 'expm1', 'log', 'log1p', 'log2', 'log10', 'pow', 'sqrt',
-           'acos', 'asin', 'atan', 'atan2', 'cos', 'hypot', 'sin', 'tan',
-           'degrees', 'radians',
-           'acosh', 'asinh', 'atanh', 'cosh', 'sinh', 'tanh',
-           'erf', 'erfc',
-           'phi', 'pi', 'e', 'tau', 'inf', 'nan']
+__all__ = [
+    'ceil', 'copysign', 'fabs', 'factorial', 'floor', 'fmod', 'frexp', 'fsum',
+    'isclose', 'ldexp', 'modf', 'remainder', 'sign', 'signt', 'exp', 'expm1',
+    'log', 'log1p', 'log2', 'log10', 'pow', 'sqrt', 'acos', 'asin', 'atan',
+    'atan2', 'cos', 'hypot', 'sin', 'tan', 'degrees', 'radians', 'acosh',
+    'asinh', 'atanh', 'cosh', 'sinh', 'tanh', 'erf', 'erfc', 'phi', 'pi', 'e',
+    'tau', 'inf', 'nan'
+]
 
-__delibnotimpltd__ = ['gamma', 'lgamma',
-                      'gcd', 'isnan', 'isinf', 'isfinite', 'trunc']
+__delibnotimpltd__ = [
+    'gamma', 'lgamma', 'gcd', 'isnan', 'isinf', 'isfinite', 'trunc'
+]
 
 # Now add any missing functions.
 for funct in dir(math):

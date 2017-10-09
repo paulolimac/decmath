@@ -1,7 +1,8 @@
 from decimal import getcontext, Decimal
 from decmath import sign
 
-## Hyperbolic functions
+# Hyperbolic functions
+
 
 def acosh(x):
     """Return the inverse hyperbolic cosine of x."""
@@ -16,10 +17,12 @@ def acosh(x):
     else:
         return (x + (x**2 - 1).sqrt()).ln()
 
+
 def asinh(x):
     """Return the inverse hyperbolic sine of x."""
     x = Decimal(str(x))
     return (x + (1 + x**2).sqrt()).ln()
+
 
 def atanh(x):
     """Return the inverse hyperbolic tangent of x."""
@@ -33,6 +36,7 @@ def atanh(x):
 
     else:
         return Decimal('0.5') * ((1 + x) / (1 - x)).ln()
+
 
 def cosh(x):
     """Return the hyperbolic cosine of x."""
@@ -52,6 +56,7 @@ def cosh(x):
     getcontext().prec -= 2
     return +s
 
+
 def sinh(x):
     """Return the hyperbolic sine of x."""
     x = Decimal(str(x))
@@ -69,6 +74,7 @@ def sinh(x):
         s += num / fact
     getcontext().prec -= 2
     return +s
+
 
 def tanh(x):
     """Return the hyperbolic tangent of x."""
