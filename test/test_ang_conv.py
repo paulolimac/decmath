@@ -2,7 +2,7 @@
 import math as m
 import decmath as dm
 
-from test import abteq
+from test import abteq, msteq
 
 
 def test_degrees():
@@ -11,7 +11,7 @@ def test_degrees():
     assert abteq(dm.degrees(-.5), m.degrees(-.5))
     assert abteq(dm.degrees(-7.1), m.degrees(-7.1))
     assert dm.degrees(dm.pi) == 180
-    assert dm.degrees(dm.pi / 2), 90
+    assert msteq(dm.degrees(dm.pi / 2), 90)
 
 
 def test_radians():

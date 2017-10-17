@@ -23,8 +23,8 @@ SOFTWARE.
 
 __version__ = "0.4.0"
 
-# This library aims at implementing the standard math library, (and some extras)
-# starting with the most used funtions.
+# This library aims at implementing the standard math library,
+# (and some extras) starting with the most used funtions.
 # If you'd have a request you can always open a ticket or even better:
 # propose a pull request containing those changes.
 
@@ -52,12 +52,14 @@ def _pi():
 
 
 # Import the subfiles into the decmath namespace.
-from decmath.num_repr import *
-from decmath.pow_log import *
-from decmath.trig import *
-from decmath.ang_conv import *
-from decmath.hyper import *
-from decmath.special import *
+# 'noqa' prevents the linter to shout at us, let us say this isn't
+# exactly PEP8 compatible...
+from decmath.num_repr import *  # noqa
+from decmath.pow_log import *  # noqa
+from decmath.trig import *  # noqa
+from decmath.ang_conv import *  # noqa
+from decmath.hyper import *  # noqa
+from decmath.special import *  # noqa
 
 
 # Now add the constants using some neat/hacky code...
@@ -114,18 +116,16 @@ sys.modules[__name__] = _Constants()
 
 __all__ = [
     'ceil', 'copysign', 'fabs', 'factorial', 'floor', 'fmod', 'frexp', 'fsum',
-    'isclose', 'ldexp', 'modf', 'remainder', 'sign', 'signt', 'exp', 'expm1',
-    'log', 'log1p', 'log2', 'log10', 'pow', 'sqrt', 'acos', 'asin', 'atan',
-    'atan2', 'cos', 'hypot', 'sin', 'tan', 'degrees', 'radians', 'acosh',
-    'asinh', 'atanh', 'cosh', 'sinh', 'tanh', 'erf', 'erfc', 'phi', 'pi', 'e',
-    'tau', 'inf', 'nan'
+    'gcd', 'isclose', 'ldexp', 'modf', 'remainder', 'sign', 'signt', 'exp',
+    'expm1', 'log', 'log1p', 'log2', 'log10', 'pow', 'sqrt', 'acos', 'asin',
+    'atan', 'atan2', 'cos', 'hypot', 'sin', 'tan', 'degrees', 'radians',
+    'acosh', 'asinh', 'atanh', 'cosh', 'sinh', 'tanh', 'erf', 'erfc', 'phi',
+    'pi', 'e', 'tau', 'inf', 'nan'
 ]
 
-__delibnotimpltd__ = [
-    'gamma', 'lgamma', 'gcd', 'isnan', 'isinf', 'isfinite', 'trunc'
-]
+__delibnotimpltd__ = ['isnan', 'isinf', 'isfinite', 'trunc']
 
 # Now add any missing functions.
 for funct in dir(math):
-    if not funct in globals().keys():
+    if funct not in globals().keys():
         globals()[funct] = getattr(math, funct)
